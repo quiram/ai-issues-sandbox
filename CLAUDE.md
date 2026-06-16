@@ -29,7 +29,7 @@ Each file within a subdirectory focuses on a single linting idea. Files must ope
 3. If violations are found, invokes `anthropics/claude-code-action` with the linter output as the prompt.
 4. Commits and pushes Claude's fixes back to the PR branch.
 
-**Required secret:** `ANTHROPIC_API_KEY` must be set in the repository's GitHub Actions secrets.
+**Required secret:** `CLAUDE_CODE_OAUTH_TOKEN` must be set in the repository's GitHub Actions secrets. Generate it with `claude setup-token` (requires Claude Pro or Max).
 
 ## Audience
 
