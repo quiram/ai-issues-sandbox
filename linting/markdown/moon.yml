@@ -1,0 +1,10 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+language: 'javascript'
+
+tasks:
+  lint:
+    command: 'npm'
+    args: 'run lint'
+    inputs:
+      - '**/*.md'
