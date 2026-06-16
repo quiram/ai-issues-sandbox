@@ -20,6 +20,17 @@ Each file within a subdirectory focuses on a single linting idea. Files must ope
 
 - **Markdown**: use [markdownlint rule IDs](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md) (e.g., `MD013`, `MD041`)
 
+## CI / GitHub Actions
+
+`.github/workflows/ai-lint-fix.yml` runs on every PR and:
+
+1. Uses Moon's `--affected` flag to detect which projects changed.
+2. Runs the `lint` task for any affected projects.
+3. If violations are found, invokes `anthropics/claude-code-action` with the linter output as the prompt.
+4. Commits and pushes Claude's fixes back to the PR branch.
+
+**Required secret:** `ANTHROPIC_API_KEY` must be set in the repository's GitHub Actions secrets.
+
 ## Audience
 
 Content produced here targets engineering teams adopting AI tooling — keep examples realistic and grounded in actual outcomes rather than idealized results.
