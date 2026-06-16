@@ -41,6 +41,7 @@ jobs:
           LINT_OUTPUT=$(moon run :lint --affected --base origin/${{ github.base_ref }} 2>&1)
           EXIT_CODE=$?
           set -e
+          LINT_OUTPUT=$(echo "$LINT_OUTPUT" | sed 's|^\([a-zA-Z0-9_.-][^/: ]*\.md\):|linting/markdown/\1:|')
           if [ $EXIT_CODE -ne 0 ]; then
             echo "has_violations=true" >> $GITHUB_OUTPUT
             {
