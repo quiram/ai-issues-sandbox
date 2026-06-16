@@ -8,7 +8,17 @@ This is a sandbox for experimenting with AI-assisted workflows across the SDLC. 
 
 ## Structure
 
-Experiments are organized by scenario, each in its own directory (e.g., `linting/`). A scenario typically includes a setup, a problem to solve or task to perform, and notes on what worked, what didn't, and what was surprising.
+Experiments are organized by scenario, each in its own directory. A scenario typically includes a setup, a problem to solve or task to perform, and notes on what worked, what didn't, and what was surprising.
+
+### `linting/`
+
+Tests AI-based linting ideas. Subdirectories are organized by file type:
+
+- `linting/markdown/` — linting experiments specific to Markdown files
+
+Each file within a subdirectory focuses on a single linting idea. Files must open with a header section that declares the rule(s) under test using the standard nomenclature of the relevant linting tool:
+
+- **Markdown**: use [markdownlint rule IDs](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md) (e.g., `MD013`, `MD041`)
 
 ## Audience
 
