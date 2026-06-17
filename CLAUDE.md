@@ -28,7 +28,7 @@ Rules under test: [<RULE_ID>](<link to rule documentation>)
 ... content with intentional violations ...
 ```
 
-- **Markdown**: rule IDs and doc links come from [markdownlint](https://github.com/DavidAnson/markdownlint/tree/main/doc) (e.g., `MD013`, `MD041`)
+The link to the rule documentation is optional — omit it if the tool does not publish per-rule docs at a stable URL. Use the rule ID alone in that case: `Rules under test: <RULE_ID>`.
 
 ## CI / GitHub Actions
 
