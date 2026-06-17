@@ -16,9 +16,19 @@ Tests AI-based linting ideas. Subdirectories are organized by file type:
 
 - `linting/markdown/` — linting experiments specific to Markdown files
 
-Each file within a subdirectory focuses on a single linting idea. Files must open with a header section that declares the rule(s) under test using the standard nomenclature of the relevant linting tool:
+Each file within a subdirectory focuses on a single linting idea and follows this structure:
 
-- **Markdown**: use [markdownlint rule IDs](https://github.com/markdownlint/markdownlint/blob/main/docs/RULES.md) (e.g., `MD013`, `MD041`)
+```markdown
+# <RULE_ID> — <Rule title>
+
+Rules under test: [<RULE_ID>](<link to rule documentation>)
+
+<One or two sentences describing what violation(s) the file demonstrates.>
+
+... content with intentional violations ...
+```
+
+- **Markdown**: rule IDs and doc links come from [markdownlint](https://github.com/DavidAnson/markdownlint/tree/main/doc) (e.g., `MD013`, `MD041`)
 
 ## CI / GitHub Actions
 
