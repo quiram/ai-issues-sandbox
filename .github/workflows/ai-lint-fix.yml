@@ -31,6 +31,12 @@ jobs:
           curl -fsSL https://moonrepo.dev/install/moon.sh | bash
           echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
+      - name: Install hadolint
+        run: |
+          wget -qO /usr/local/bin/hadolint \
+            https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+
       - name: Install dependencies
         run: npm ci --prefix linting/markdown
 
