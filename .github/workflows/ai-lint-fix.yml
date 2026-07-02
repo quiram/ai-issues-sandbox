@@ -67,7 +67,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_args: '--allowedTools Edit,Read,Write,Glob,Grep'
           prompt: |
-            The markdownlint linter found the following violations in this PR:
+            The linters found the following violations in this PR:
 
             ${{ steps.lint.outputs.violations }}
 
