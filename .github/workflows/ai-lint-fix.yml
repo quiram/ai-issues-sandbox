@@ -68,7 +68,6 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_args: '--allowedTools Edit,Read,Write,Glob,Grep'
-          show_full_output: true
           prompt: |
             The linters found the following violations in this PR:
 
