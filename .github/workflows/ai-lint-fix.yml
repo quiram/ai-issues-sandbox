@@ -48,6 +48,8 @@ jobs:
           EXIT_CODE=$?
           set -e
           LINT_OUTPUT=$(echo "$LINT_OUTPUT" | sed 's|^\([a-zA-Z0-9_.-][^/: ]*\.md\):|linting/markdown/\1:|')
+          # Strip Moon task runner wrapper lines, keep only linter violation lines
+          LINT_OUTPUT=$(echo "$LINT_OUTPUT" | grep -E '^[^ ].*:[0-9]+ (DL|MD|SC)[0-9]+')
           if [ $EXIT_CODE -ne 0 ]; then
             echo "has_violations=true" >> $GITHUB_OUTPUT
             {
@@ -66,6 +68,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_args: '--allowedTools Edit,Read,Write,Glob,Grep'
+          show_full_output: true
           prompt: |
             The linters found the following violations in this PR:
 
