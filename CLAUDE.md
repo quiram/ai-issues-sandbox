@@ -14,8 +14,7 @@ Experiments are organized by scenario, each in its own directory. A scenario typ
 
 Tests AI-based linting ideas. Subdirectories are organized by file type:
 
-- `linting/markdown/` — linting experiments specific to Markdown files (linted with [markdownlint](https://github.com/davidanson/markdownlint))
-- `linting/docker/` — linting experiments specific to Dockerfiles (linted with [hadolint](https://github.com/hadolint/hadolint))
+- `linting/markdown/` — linting experiments specific to Markdown files
 
 Each file within a subdirectory focuses on a single linting idea and follows this structure:
 
