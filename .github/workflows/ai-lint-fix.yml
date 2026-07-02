@@ -49,7 +49,7 @@ jobs:
           set -e
           LINT_OUTPUT=$(echo "$LINT_OUTPUT" | sed 's|^\([a-zA-Z0-9_.-][^/: ]*\.md\):|linting/markdown/\1:|')
           # Strip Moon task runner wrapper lines, keep only linter violation lines
-          LINT_OUTPUT=$(echo "$LINT_OUTPUT" | grep -E '^[^ ].*:[0-9]+ (DL|MD|SC)[0-9]+')
+          LINT_OUTPUT=$(echo "$LINT_OUTPUT" | grep -E '^[a-zA-Z.\/].*:[0-9]')
           if [ $EXIT_CODE -ne 0 ]; then
             echo "has_violations=true" >> $GITHUB_OUTPUT
             {
