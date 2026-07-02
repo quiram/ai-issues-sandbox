@@ -31,6 +31,12 @@ jobs:
           curl -fsSL https://moonrepo.dev/install/moon.sh | bash
           echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
+      - name: Install hadolint
+        run: |
+          wget -qO /usr/local/bin/hadolint \
+            https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /usr/local/bin/hadolint
+
       - name: Install dependencies
         run: npm ci --prefix linting/markdown
 
@@ -42,6 +48,8 @@ jobs:
           EXIT_CODE=$?
           set -e
           LINT_OUTPUT=$(echo "$LINT_OUTPUT" | sed 's|^\([a-zA-Z0-9_.-][^/: ]*\.md\):|linting/markdown/\1:|')
+          # Strip Moon task runner wrapper lines, keep only linter violation lines
+          LINT_OUTPUT=$(echo "$LINT_OUTPUT" | grep -E '^[a-zA-Z.\/].*:[0-9]')
           if [ $EXIT_CODE -ne 0 ]; then
             echo "has_violations=true" >> $GITHUB_OUTPUT
             {
@@ -61,7 +69,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_args: '--allowedTools Edit,Read,Write,Glob,Grep'
           prompt: |
-            The markdownlint linter found the following violations in this PR:
+            The linters found the following violations in this PR:
 
             ${{ steps.lint.outputs.violations }}
 
@@ -73,5 +81,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "fix: address linting violations"
+          git diff --staged --quiet || git commit -m "fix: address linting violations [skip ci]"
           git push
