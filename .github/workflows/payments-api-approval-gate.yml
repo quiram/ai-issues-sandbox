@@ -1,0 +1,87 @@
+# Requires at least one human approval on PRs that touch payments-api/.
+# PRs that don't touch payments-api/ pass immediately, so they can merge
+# without any approval.
+#
+# IMPORTANT: this workflow only *reports* a status — to actually block
+# merging, mark the "approval-gate" check as required in the branch
+# protection rules (or ruleset) for the target branch. Do NOT also set
+# "Require approvals" there, or every PR would need one regardless of
+# what this check says.
+
+name: Payments API approval gate
+
+on:
+  # Re-evaluate whenever the PR content changes...
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # ...and whenever a review is submitted or dismissed, so the check
+  # flips to green as soon as the required approval arrives.
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: payments-api-approval-gate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  approval-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check approvals for payments-api changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.pull_request.number;
+
+            // 1. Does this PR touch the sensitive path?
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number, per_page: 100,
+            });
+            const sensitiveFiles = files
+              .map(f => f.filename)
+              .filter(name => name === 'payments-api' || name.startsWith('payments-api/'));
+
+            if (sensitiveFiles.length === 0) {
+              core.info('No changes under payments-api/ — no approval required.');
+              return;
+            }
+
+            core.info(`PR touches ${sensitiveFiles.length} file(s) under payments-api/:`);
+            sensitiveFiles.forEach(name => core.info(`  - ${name}`));
+
+            // 2. Count current approvals. Walk reviews in order and keep only
+            //    each reviewer's latest meaningful state, so an approval that
+            //    was later dismissed or replaced by "changes requested"
+            //    doesn't count.
+            const reviews = await github.paginate(github.rest.pulls.listReviews, {
+              owner, repo, pull_number, per_page: 100,
+            });
+
+            const latestStateByReviewer = new Map();
+            for (const review of reviews) {
+              if (!review.user || review.user.type === 'Bot') continue;
+              if (review.state === 'APPROVED' || review.state === 'CHANGES_REQUESTED') {
+                latestStateByReviewer.set(review.user.login, review.state);
+              } else if (review.state === 'DISMISSED') {
+                latestStateByReviewer.delete(review.user.login);
+              }
+              // COMMENTED reviews don't change a reviewer's standing state.
+            }
+
+            const approvers = [...latestStateByReviewer.entries()]
+              .filter(([, state]) => state === 'APPROVED')
+              .map(([login]) => login);
+
+            if (approvers.length >= 1) {
+              core.info(`Approved by: ${approvers.join(', ')} — gate passed.`);
+            } else {
+              core.setFailed(
+                'This PR modifies payments-api/, which requires at least one ' +
+                'approval from a person before it can be merged. Current approvals: 0.'
+              );
+            }
